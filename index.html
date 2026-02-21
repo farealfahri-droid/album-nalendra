@@ -1,0 +1,1722 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nalendra</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Instrument+Serif:ital@0;1&family=Instrument+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+/* ─── RESET & VARS ─────────────────────────────────── */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+:root {
+  --bg:     #080808;
+  --surface:#111111;
+  --card:   #161616;
+  --border: #232323;
+  --mid:    #404040;
+  --muted:  #6a6a6a;
+  --silver: #aaaaaa;
+  --white:  #f0f0f0;
+  --pure:   #ffffff;
+  --accent: #e8e8e8;
+}
+
+body {
+  background: var(--bg);
+  color: var(--white);
+  font-family: 'Instrument Sans', sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+  cursor: default;
+}
+
+/* ─── NOISE OVERLAY ─────────────────────────────────── */
+body::after {
+  content:'';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.35;
+}
+
+/* ─── NAV ─────────────────────────────────────────── */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 500;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 48px;
+  background: linear-gradient(to bottom, rgba(8,8,8,0.95) 0%, rgba(8,8,8,0) 100%);
+}
+
+.nav-logo {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.8rem;
+  letter-spacing: 4px;
+  color: var(--pure);
+  text-decoration: none;
+}
+
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.nav-btn {
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--silver);
+  padding: 8px 18px;
+  border-radius: 40px;
+  font-family: 'Instrument Sans', sans-serif;
+  font-size: 0.82rem;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: all 0.25s;
+}
+
+.nav-btn:hover {
+  border-color: var(--muted);
+  color: var(--pure);
+}
+
+.nav-btn.primary {
+  background: var(--pure);
+  color: var(--bg);
+  border-color: var(--pure);
+  font-weight: 500;
+}
+
+.nav-btn.primary:hover {
+  background: var(--accent);
+  transform: translateY(-1px);
+}
+
+/* ─── HERO ─────────────────────────────────────────── */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-end;
+  padding: 0 48px 80px;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-bg {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 60% at 60% 40%, rgba(255,255,255,0.03) 0%, transparent 70%),
+    radial-gradient(ellipse 40% 40% at 20% 80%, rgba(255,255,255,0.025) 0%, transparent 60%);
+}
+
+.hero-lines {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px);
+  background-size: 80px 80px;
+  mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 30%, transparent 100%);
+}
+
+.hero-eyebrow {
+  font-size: 0.75rem;
+  letter-spacing: 5px;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 20px;
+  opacity: 0;
+  animation: riseUp 0.8s 0.2s ease forwards;
+}
+
+.hero-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(5rem, 13vw, 11rem);
+  line-height: 0.9;
+  letter-spacing: 2px;
+  color: var(--pure);
+  margin-bottom: 28px;
+  opacity: 0;
+  animation: riseUp 0.9s 0.35s ease forwards;
+}
+
+.hero-title em {
+  font-family: 'Instrument Serif', serif;
+  font-style: italic;
+  font-size: 0.55em;
+  letter-spacing: 0px;
+  color: var(--silver);
+  display: block;
+  line-height: 1;
+}
+
+.hero-sub {
+  font-size: 1rem;
+  color: var(--muted);
+  max-width: 400px;
+  line-height: 1.7;
+  margin-bottom: 40px;
+  opacity: 0;
+  animation: riseUp 0.9s 0.5s ease forwards;
+}
+
+.hero-actions {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  opacity: 0;
+  animation: riseUp 0.9s 0.65s ease forwards;
+}
+
+.btn-cta {
+  background: var(--pure);
+  color: var(--bg);
+  border: none;
+  padding: 14px 32px;
+  border-radius: 40px;
+  font-family: 'Instrument Sans', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  letter-spacing: 0.3px;
+  transition: all 0.25s;
+}
+
+.btn-cta:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 32px rgba(255,255,255,0.15);
+}
+
+.btn-ghost {
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--silver);
+  padding: 14px 28px;
+  border-radius: 40px;
+  font-family: 'Instrument Sans', sans-serif;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.25s;
+}
+
+.btn-ghost:hover { border-color: var(--muted); color: var(--pure); }
+
+.hero-scroll {
+  position: absolute;
+  bottom: 36px;
+  right: 48px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.65rem;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--mid);
+  opacity: 0;
+  animation: riseUp 1s 1s ease forwards;
+}
+
+.hero-scroll-line {
+  width: 1px;
+  height: 48px;
+  background: linear-gradient(to bottom, var(--mid), transparent);
+  animation: scrollPulse 2s infinite;
+}
+
+@keyframes scrollPulse {
+  0%, 100% { opacity: 1; transform: scaleY(1); }
+  50% { opacity: 0.3; transform: scaleY(0.6); }
+}
+
+@keyframes riseUp {
+  from { opacity: 0; transform: translateY(32px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ─── MAIN CONTENT ──────────────────────────────────── */
+main { padding-bottom: 120px; }
+
+/* ─── CATEGORY SECTION ──────────────────────────────── */
+.cat-section {
+  padding: 60px 0 0;
+}
+
+.cat-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  padding: 0 48px;
+  margin-bottom: 24px;
+}
+
+.cat-label {
+  font-size: 0.7rem;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 4px;
+}
+
+.cat-title {
+  font-family: 'Instrument Serif', serif;
+  font-size: 1.9rem;
+  font-style: italic;
+  color: var(--pure);
+  font-weight: 400;
+}
+
+.cat-count {
+  font-size: 0.78rem;
+  color: var(--mid);
+  letter-spacing: 1px;
+}
+
+.cat-nav {
+  display: flex;
+  gap: 6px;
+}
+
+.cat-arrow {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: none;
+  color: var(--silver);
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  line-height: 1;
+}
+
+.cat-arrow:hover {
+  background: var(--surface);
+  border-color: var(--mid);
+  color: var(--pure);
+}
+
+/* ─── HORIZONTAL SCROLL TRACK ───────────────────────── */
+.scroll-track-wrap {
+  position: relative;
+}
+
+.scroll-track {
+  display: flex;
+  gap: 16px;
+  padding: 0 48px 24px;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  cursor: grab;
+}
+
+.scroll-track::-webkit-scrollbar { display: none; }
+.scroll-track.grabbing { cursor: grabbing; }
+
+/* Edge fades */
+.scroll-track-wrap::before,
+.scroll-track-wrap::after {
+  content: '';
+  position: absolute;
+  top: 0; bottom: 0;
+  width: 80px;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.scroll-track-wrap::before {
+  left: 0;
+  background: linear-gradient(to right, var(--bg), transparent);
+}
+
+.scroll-track-wrap::after {
+  right: 0;
+  background: linear-gradient(to left, var(--bg), transparent);
+}
+
+/* ─── VIDEO CARD ────────────────────────────────────── */
+.vid-card {
+  flex-shrink: 0;
+  width: 280px;
+  border-radius: 16px;
+  overflow: hidden;
+  background: var(--card);
+  border: 1px solid var(--border);
+  cursor: pointer;
+  transition: transform 0.35s ease, box-shadow 0.35s ease, border-color 0.3s;
+  position: relative;
+  animation: cardFadeIn 0.5s ease both;
+}
+
+@keyframes cardFadeIn {
+  from { opacity: 0; transform: translateY(12px) scale(0.98); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.vid-card:hover {
+  transform: translateY(-8px) scale(1.01);
+  box-shadow: 0 24px 60px rgba(0,0,0,0.6);
+  border-color: var(--mid);
+}
+
+.vid-thumb {
+  position: relative;
+  width: 100%;
+  height: 220px;
+  overflow: hidden;
+  background: #0f0f0f;
+}
+
+.vid-thumb video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.5s ease;
+}
+
+.vid-card:hover .vid-thumb video,
+.vid-card:hover .vid-thumb img {
+  transform: scale(1.06);
+}
+
+.vid-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.5s ease;
+}
+
+/* Placeholder skeleton when no video */
+.vid-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%);
+  font-size: 2rem;
+  opacity: 0.4;
+}
+
+.vid-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 50%);
+  opacity: 0;
+  transition: opacity 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.vid-card:hover .vid-overlay { opacity: 1; }
+
+.play-circle {
+  width: 52px;
+  height: 52px;
+  background: rgba(255,255,255,0.15);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.3s, background 0.3s;
+}
+
+.vid-card:hover .play-circle {
+  transform: scale(1.1);
+  background: rgba(255,255,255,0.25);
+}
+
+.vid-duration {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  background: rgba(0,0,0,0.65);
+  color: rgba(255,255,255,0.8);
+  font-size: 0.7rem;
+  padding: 3px 8px;
+  border-radius: 6px;
+  letter-spacing: 0.5px;
+}
+
+.vid-info {
+  padding: 16px 18px 18px;
+}
+
+.vid-date {
+  font-size: 0.7rem;
+  letter-spacing: 2px;
+  color: var(--muted);
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+.vid-title {
+  font-family: 'Instrument Serif', serif;
+  font-size: 1.05rem;
+  font-style: italic;
+  color: var(--pure);
+  line-height: 1.4;
+  margin-bottom: 6px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.vid-caption {
+  font-size: 0.8rem;
+  color: var(--muted);
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.vid-card-footer {
+  padding: 0 18px 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.vid-like-btn {
+  background: none;
+  border: none;
+  color: var(--muted);
+  font-size: 0.82rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 0;
+  transition: color 0.2s;
+  font-family: 'Instrument Sans', sans-serif;
+}
+
+.vid-like-btn:hover { color: var(--pure); }
+.vid-like-btn.liked { color: var(--pure); }
+
+/* ─── ADD CARD ──────────────────────────────────────── */
+
+
+/* ─── DIVIDER ───────────────────────────────────────── */
+.section-divider {
+  margin: 0 48px;
+  border: none;
+  border-top: 1px solid var(--border);
+}
+
+/* ─── MANAGE CATEGORIES BAR ─────────────────────────── */
+.cat-manage-bar {
+  padding: 40px 48px 0;
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.cat-chip {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--silver);
+  padding: 8px 18px;
+  border-radius: 40px;
+  font-size: 0.82rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: 'Instrument Sans', sans-serif;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.cat-chip:hover { border-color: var(--mid); color: var(--pure); }
+
+.cat-chip-add {
+  border-style: dashed;
+  color: var(--muted);
+}
+
+/* ─── LIGHTBOX ──────────────────────────────────────── */
+.lightbox {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.96);
+  z-index: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s;
+  padding: 20px;
+}
+
+.lightbox.open { opacity: 1; pointer-events: all; }
+
+.lb-content {
+  width: 100%;
+  max-width: 900px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transform: scale(0.96);
+  transition: transform 0.3s;
+}
+
+.lightbox.open .lb-content { transform: scale(1); }
+
+.lb-video {
+  width: 100%;
+  max-height: 65vh;
+  border-radius: 14px;
+  background: #000;
+  display: block;
+}
+
+.lb-meta {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-top: 20px;
+  padding: 0 4px;
+}
+
+.lb-meta-left { flex: 1; }
+
+.lb-title {
+  font-family: 'Instrument Serif', serif;
+  font-size: 1.4rem;
+  font-style: italic;
+  color: var(--pure);
+  margin-bottom: 6px;
+}
+
+.lb-date-cat {
+  font-size: 0.75rem;
+  color: var(--muted);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.lb-cap {
+  font-size: 0.9rem;
+  color: var(--silver);
+  line-height: 1.6;
+  max-width: 500px;
+}
+
+.lb-meta-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
+}
+
+.lb-close {
+  position: fixed;
+  top: 24px;
+  right: 28px;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: var(--silver);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  font-size: 1.1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.lb-close:hover { background: rgba(255,255,255,0.15); color: var(--pure); }
+
+.lb-nav-row {
+  display: flex;
+  gap: 8px;
+}
+
+.lb-nav {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: none;
+  color: var(--silver);
+  font-size: 1.1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.lb-nav:hover { background: var(--surface); color: var(--pure); border-color: var(--mid); }
+
+.lb-del {
+  background: none;
+  border: 1px solid #333;
+  color: var(--muted);
+  padding: 7px 14px;
+  border-radius: 8px;
+  font-size: 0.78rem;
+  cursor: pointer;
+  font-family: 'Instrument Sans', sans-serif;
+  transition: all 0.2s;
+}
+
+.lb-del:hover { border-color: var(--muted); color: var(--silver); }
+
+/* ─── UPLOAD MODAL ──────────────────────────────────── */
+.modal-wrap {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.8);
+  backdrop-filter: blur(10px);
+  z-index: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s;
+  padding: 16px;
+}
+
+.modal-wrap.open { opacity: 1; pointer-events: all; }
+
+.modal {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 22px;
+  width: 100%;
+  max-width: 520px;
+  transform: translateY(24px);
+  transition: transform 0.35s ease;
+  overflow: hidden;
+  max-height: 92vh;
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+
+.modal::-webkit-scrollbar { display: none; }
+.modal-wrap.open .modal { transform: translateY(0); }
+
+.modal-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 22px 26px;
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  background: var(--surface);
+  z-index: 1;
+}
+
+.modal-head h3 {
+  font-family: 'Instrument Serif', serif;
+  font-size: 1.15rem;
+  font-style: italic;
+  font-weight: 400;
+}
+
+.modal-x {
+  background: none;
+  border: none;
+  color: var(--muted);
+  font-size: 1.2rem;
+  cursor: pointer;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  transition: all 0.2s;
+}
+
+.modal-x:hover { background: var(--card); color: var(--pure); }
+
+.modal-body { padding: 24px 26px; }
+
+.drop-zone {
+  border: 1.5px dashed var(--border);
+  border-radius: 14px;
+  padding: 44px 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s;
+  position: relative;
+  margin-bottom: 20px;
+}
+
+.drop-zone:hover, .drop-zone.over {
+  border-color: var(--muted);
+  background: rgba(255,255,255,0.02);
+}
+
+.drop-zone input[type=file] {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+  width: 100%;
+  height: 100%;
+}
+
+.drop-icon { font-size: 2.2rem; margin-bottom: 10px; }
+.drop-text { font-size: 0.85rem; color: var(--muted); line-height: 1.7; }
+.drop-text b { color: var(--silver); }
+
+.preview-box {
+  display: none;
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 20px;
+  position: relative;
+}
+
+.preview-box video {
+  width: 100%;
+  max-height: 220px;
+  object-fit: cover;
+  display: block;
+}
+
+.preview-reset {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  background: rgba(0,0,0,0.7);
+  border: 1px solid var(--border);
+  color: var(--silver);
+  border-radius: 8px;
+  padding: 5px 12px;
+  font-size: 0.76rem;
+  cursor: pointer;
+  font-family: 'Instrument Sans', sans-serif;
+}
+
+.field {
+  margin-bottom: 16px;
+}
+
+.field label {
+  display: block;
+  font-size: 0.72rem;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 7px;
+}
+
+.field input,
+.field textarea,
+.field select {
+  width: 100%;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 11px 14px;
+  font-family: 'Instrument Sans', sans-serif;
+  font-size: 0.9rem;
+  color: var(--pure);
+  outline: none;
+  transition: border-color 0.2s;
+  -webkit-appearance: none;
+}
+
+.field input:focus,
+.field textarea:focus,
+.field select:focus { border-color: var(--mid); }
+.field textarea { resize: vertical; min-height: 76px; }
+.field select option { background: var(--card); }
+
+.modal-foot {
+  display: flex;
+  gap: 10px;
+  padding: 16px 26px 26px;
+}
+
+.btn-sec {
+  flex: 1;
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  border-radius: 40px;
+  padding: 12px;
+  font-family: 'Instrument Sans', sans-serif;
+  font-size: 0.88rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-sec:hover { border-color: var(--mid); color: var(--silver); }
+
+.btn-pri {
+  flex: 2;
+  background: var(--pure);
+  color: var(--bg);
+  border: none;
+  border-radius: 40px;
+  padding: 12px;
+  font-family: 'Instrument Sans', sans-serif;
+  font-size: 0.88rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-pri:hover { background: var(--accent); transform: translateY(-1px); }
+
+/* ─── NEW CAT MODAL ─────────────────────────────────── */
+.cat-modal-wrap {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+  z-index: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s;
+}
+
+.cat-modal-wrap.open { opacity: 1; pointer-events: all; }
+
+.cat-modal {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 28px;
+  width: 100%;
+  max-width: 380px;
+  transform: scale(0.96);
+  transition: transform 0.25s;
+}
+
+.cat-modal-wrap.open .cat-modal { transform: scale(1); }
+
+.cat-modal h3 {
+  font-family: 'Instrument Serif', serif;
+  font-size: 1.15rem;
+  font-style: italic;
+  font-weight: 400;
+  margin-bottom: 20px;
+}
+
+.cat-modal-actions { display: flex; gap: 10px; margin-top: 18px; }
+
+/* ─── TOAST ─────────────────────────────────────────── */
+.toast {
+  position: fixed;
+  bottom: 28px;
+  left: 50%;
+  transform: translateX(-50%) translateY(60px);
+  background: var(--pure);
+  color: var(--bg);
+  padding: 11px 24px;
+  border-radius: 40px;
+  font-size: 0.84rem;
+  font-weight: 500;
+  z-index: 1000;
+  transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1);
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.toast.show { transform: translateX(-50%) translateY(0); }
+
+/* ─── EMPTY STATE ───────────────────────────────────── */
+.empty-track {
+  padding: 0 48px 24px;
+  color: var(--muted);
+  font-style: italic;
+  font-size: 0.88rem;
+}
+
+/* ─── RESPONSIVE ────────────────────────────────────── */
+@media (max-width: 768px) {
+  nav { padding: 0 20px; }
+  .hero { padding: 0 20px 60px; }
+  .hero-title { font-size: clamp(4rem, 15vw, 6rem); }
+  .cat-header { padding: 0 20px; }
+  .scroll-track { padding: 0 20px 20px; }
+  .cat-manage-bar { padding: 30px 20px 0; }
+  .section-divider { margin: 0 20px; }
+  .empty-track { padding: 0 20px 20px; }
+}
+
+/* ─── MUSIC FAB ─────────────────────────────────────── */
+.music-fab {
+  position: fixed;
+  bottom: 28px;
+  right: 28px;
+  z-index: 400;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: var(--pure);
+  border: none;
+  color: var(--bg);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 28px rgba(0,0,0,0.5);
+  transition: transform 0.25s, box-shadow 0.25s;
+}
+.music-fab:hover { transform: scale(1.08); box-shadow: 0 12px 36px rgba(255,255,255,0.18); }
+.music-fab.playing { animation: fabPulse 2s ease-in-out infinite; }
+@keyframes fabPulse {
+  0%, 100% { box-shadow: 0 8px 28px rgba(0,0,0,0.5); }
+  50%       { box-shadow: 0 8px 36px rgba(255,255,255,0.28); }
+}
+
+
+
+
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="#">ALBUM</a>
+  <div class="nav-right">
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-lines"></div>
+  <p class="hero-eyebrow">✦ buka ini kalo lu kangen gua ✦</p>
+  <h1 class="hero-title">
+    Nalendra<br>
+    <em>Akhza</em>
+    - G
+  </h1>
+  <p class="hero-sub"> Gua gak butuh yang sempurna, I just want you. Kita lewati semuanya bersama, ya? </p>
+  <div class="hero-actions">
+    <button class="btn-cta" onclick="document.querySelector('main').scrollIntoView({behavior:'smooth'})">Lihat Galeri</button>
+  </div>
+  <div class="hero-scroll">
+    <span>Scroll</span>
+    <div class="hero-scroll-line"></div>
+  </div>
+</section>
+
+<!-- MAIN -->
+<main id="main">
+
+  <!-- Category manage bar -->
+  <div class="cat-manage-bar" id="catChips"></div>
+
+  <!-- Dynamic category sections render here -->
+  <div id="categorySections"></div>
+
+</main>
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox">
+  <button class="lb-close" onclick="closeLb()">✕</button>
+  <div class="lb-content">
+    <video class="lb-video" id="lbVid" controls autoplay style="display:none"></video>
+    <img id="lbImg" style="display:none;max-width:100%;max-height:65vh;border-radius:14px;object-fit:contain">
+    <div class="lb-meta">
+      <div class="lb-meta-left">
+        <p class="lb-date-cat" id="lbDateCat"></p>
+        <p class="lb-title" id="lbTitle"></p>
+        <p class="lb-cap" id="lbCap"></p>
+      </div>
+      <div class="lb-meta-right">
+        <div class="lb-nav-row">
+          <button class="lb-nav" onclick="navLb(-1)">‹</button>
+          <button class="lb-nav" onclick="navLb(1)">›</button>
+        </div>
+        <button class="lb-del" onclick="deleteLbVid()">Hapus</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+<!-- BACKSOUND -->
+<audio id="audioEl" src="" loop style="display:none"></audio>
+
+<!-- MUSIC FAB -->
+<button class="music-fab" id="musicFab" onclick="toggleMusic()" title="Play / Pause musik">
+  <svg id="fabIcon" width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+    <path d="M8 3v10.27A3 3 0 1 1 5.5 11V6.5l9-2.25V12.27A3 3 0 1 1 12.5 10V4.75L8 5.75V3z"/>
+  </svg>
+</button>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ─── STATE ───────────────────────────────────────────────────────────────────
+// ============================================================
+// EDIT DI SINI — tambah/hapus upload sesuai kebutuhan kamu
+// ============================================================
+let categories = [
+  { id: 'foto',    name: 'FOTO',    emoji: '📸' },
+  { id: 'video',   name: 'VIDEO',   emoji: '🎬' },
+  { id: 'special', name: 'SPECIAL', emoji: '🎉' },
+];
+
+// ============================================================
+// EDIT DI SINI — tambah videomu dengan format seperti contoh
+// Salin blok { ... }, ganti src, title, caption, catId
+// catId harus sama dengan id upload di atas
+// ============================================================
+let videos = [
+   {
+     id: 'v1',
+     catId: 'video',
+     title: 'I',
+     caption: '',
+     type: 'video',
+     src: 'https://files.catbox.moe/s5v2ed.mp4',
+     likes: 0,
+     liked: false
+   },
+
+  {
+    id: 'v2',
+    catId: 'video',
+    title: 'LOVE',
+    caption: '',
+    type: 'video',
+    src: 'https://files.catbox.moe/9ar0e5.mp4',
+    likes: 7,
+    liked: false
+  },
+  
+   {
+     id: 'v3',
+     catId: 'video',
+     title: 'YOU',
+     caption: '',
+     type: 'video',
+     src: 'https://files.catbox.moe/0pyzfw.mp4',
+     likes: 0,
+     liked: false
+   },
+
+   {
+     id: 'v4',
+     catId: 'video',
+     title: '- N',
+     caption: '',
+     type: 'video',
+     src: 'https://files.catbox.moe/ujzfe3.mp4',
+     likes: 2,
+     liked: false
+   },
+
+   {
+     id: 'v5',
+     catId: 'special',
+     title: 'I',
+     caption: '',
+     type: 'video',
+     src: 'https://files.catbox.moe/p1memm.mp4',
+     likes: 2,
+     liked: false
+   },
+
+   {
+     id: 'v6',
+     catId: 'special',
+     title: 'L',
+     caption: '',
+     type: 'video',
+     src: 'https://files.catbox.moe/6gl7hb.mp4',
+     likes: 0,
+     liked: false
+   },
+
+   {
+     id: 'v7',
+     catId: 'special',
+     title: 'O',
+     caption: '',
+     type: 'video',
+     src: 'https://files.catbox.moe/3yhrfp.mp4',
+     likes: 2,
+     liked: false
+   },
+
+   {
+     id: 'v8',
+     catId: 'special',
+     title: 'V',
+     caption: '',
+     type: 'video',
+     src: 'https://files.catbox.moe/lfsc3w.mp4',
+     likes: 7,
+     liked: false
+   },
+
+   {
+     id: 'v9',
+     catId: 'special',
+     title: 'E',
+     caption: '',
+     type: 'video',
+     src: 'https://files.catbox.moe/x77dpu.mp4',
+     likes: 0,
+     liked: false
+   },
+
+   {
+     id: 'v10',
+     catId: 'special',
+     title: 'Y',
+     caption: '',
+     type: 'video',
+     src: 'https://files.catbox.moe/wif958.mp4',
+     likes: 0,
+     liked: false
+   },
+
+   {
+     id: 'v11',
+     catId: 'special',
+     title: 'O',
+     caption: '',
+     type: 'video',
+     src: 'https://files.catbox.moe/xgtwjt.mp4',
+     likes: 7,
+     liked: false
+   },
+
+   {
+     id: 'v12',
+     catId: 'special',
+     title: 'U',
+     caption: '',
+     type: 'video',
+     src: 'https://files.catbox.moe/ln2zy2.mp4',
+     likes: 2,
+     liked: false
+   },
+
+   {
+     id: 'v13',
+     catId: 'special',
+     title: '- N',
+     caption: '',
+     type: 'video',
+     src: 'https://files.catbox.moe/3mysni.mp4',
+     likes: 2026,
+     liked: false
+   },
+
+    {
+     id: 'v14',
+     catId: 'foto',
+     title: ' ',
+     caption: '',
+     type: 'image',
+     src: 'https://i.ibb.co.com/5xgjjDcX/Whats-App-Image-2026-02-20-at-17-07-12.jpg',
+     likes: 0,
+     liked: false
+   },
+
+    {
+     id: 'v15',
+     catId: 'foto',
+     title: ' ',
+     caption: '',
+     type: 'image',
+     src: 'https://i.ibb.co.com/Z6dvz58g/Whats-App-Image-2026-02-20-at-17-07-11.jpg',
+     likes: 0,
+     liked: false
+   },
+
+    {
+     id: 'v16',
+     catId: 'foto',
+     title: ' ',
+     caption: '',
+     type: 'image',
+     src: 'https://i.ibb.co.com/Y46YdZF2/Whats-App-Image-2026-02-20-at-17-07-09.jpg',
+     likes: 0,
+     liked: false
+   },
+
+    {
+     id: 'v17',
+     catId: 'foto',
+     title: ' ',
+     caption: '',
+     type: 'image',
+     src: 'https://i.ibb.co.com/PzMCKhKJ/Whats-App-Image-2026-02-20-at-17-07-08.jpg',
+     likes: 0,
+     liked: false
+   },
+
+    {
+     id: 'v18',
+     catId: 'foto',
+     title: ' ',
+     caption: '',
+     type: 'image',
+     src: 'https://i.ibb.co.com/WvF0WycY/Whats-App-Image-2026-02-20-at-17-07-07.jpg',
+     likes: 0,
+     liked: false
+   },
+
+    {
+     id: 'v19',
+     catId: 'video',
+     title: ' ',
+     caption: '',
+     type: 'video',
+     src: 'https://files.catbox.moe/vqenj2.mp4',
+     likes: 0,
+     liked: false
+   },
+
+    {
+     id: 'v20',
+     catId: 'special',
+     title: ' ',
+     caption: '',
+     type: 'video',
+     src: 'https://files.catbox.moe/0j537e.mp4',
+     likes: 0,
+     liked: false
+   },
+];
+
+let lbCurrent = null;
+
+function saveCats() {}
+function saveVids() {}
+
+// ─── CATBOX HELPER ───────────────────────────────────────────────────────────
+function detectType(url) {
+  const u = url.toLowerCase();
+  if (/\.(mp4|mov|webm|mkv|avi|m4v)/.test(u)) return 'video';
+  return 'image';
+}
+
+function onLinkInput(val) {
+  val = val.trim();
+  const prevBox = document.getElementById('prevBox');
+  const prevVid = document.getElementById('prevVid');
+  const prevImg = document.getElementById('prevImg');
+  if (!val) {
+    prevBox.style.display = 'none';
+    prevVid.style.display = 'none';
+    prevImg.style.display = 'none';
+    return;
+  }
+  const type = detectType(val);
+  prevBox.style.display = 'block';
+  if (type === 'video') {
+    prevVid.src = val;
+    prevVid.style.display = 'block';
+    prevImg.style.display = 'none';
+  } else {
+    prevImg.src = val;
+    prevImg.style.display = 'block';
+    prevVid.style.display = 'none';
+  }
+}
+
+// ─── BOOT ────────────────────────────────────────────────────────────────────
+function boot() {
+  renderChips();
+  renderAllSections();
+  populateCatSelect();
+}
+
+// ─── CHIPS ───────────────────────────────────────────────────────────────────
+function renderChips() {
+  const bar = document.getElementById('catChips');
+  bar.innerHTML = '';
+  categories.forEach(c => {
+    const chip = document.createElement('button');
+    chip.className = 'cat-chip';
+    chip.innerHTML = `<span>${c.emoji}</span> ${c.name}`;
+    chip.onclick = () => {
+      const el = document.getElementById('sec-' + c.id);
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    };
+    bar.appendChild(chip);
+  });
+  const addChip = document.createElement('button');
+  addChip.onclick = openCatModal;
+  bar.appendChild(addChip);
+}
+
+// ─── SECTIONS ────────────────────────────────────────────────────────────────
+function renderAllSections() {
+  const container = document.getElementById('categorySections');
+  container.innerHTML = '';
+  categories.forEach((cat, i) => {
+    const sec = buildSection(cat);
+    container.appendChild(sec);
+    if (i < categories.length - 1) {
+      const hr = document.createElement('hr');
+      hr.className = 'section-divider';
+      hr.style.margin = '0 48px';
+      container.appendChild(hr);
+    }
+  });
+}
+
+function buildSection(cat) {
+  const catVids = videos.filter(v => v.catId === cat.id);
+  const sec = document.createElement('section');
+  sec.className = 'cat-section';
+  sec.id = 'sec-' + cat.id;
+  sec.innerHTML = `
+    <div class="cat-header">
+      <div>
+        <p class="cat-label">${cat.emoji} upload</p>
+        <h2 class="cat-title">${cat.name}</h2>
+      </div>
+      <div style="display:flex;align-items:center;gap:16px">
+        <span class="cat-count" id="count-${cat.id}">${catVids.length} momen</span>
+        <div class="cat-nav">
+          <button class="cat-arrow" onclick="scrollTrack('track-${cat.id}', -1)">‹</button>
+          <button class="cat-arrow" onclick="scrollTrack('track-${cat.id}', 1)">›</button>
+        </div>
+      </div>
+    </div>
+    <div class="scroll-track-wrap">
+      <div class="scroll-track" id="track-${cat.id}">
+        ${catVids.length === 0 ? renderEmptyCard() : ''}
+        ${catVids.map((v, idx) => renderCardHTML(v, idx)).join('')}
+
+      </div>
+    </div>
+  `;
+  setTimeout(() => attachCardEvents(sec, cat.id), 0);
+  setTimeout(() => enableDragScroll(sec.querySelector('#track-' + cat.id)), 0);
+  return sec;
+}
+
+function renderEmptyCard() {
+  return `<div style="flex-shrink:0;width:180px;display:flex;align-items:center;justify-content:center;font-style:italic;font-size:0.82rem;color:var(--muted);text-align:center;padding:0 8px;">Belum ada momen di sini</div>`;
+}
+
+function renderCardHTML(v, idx) {
+  const size = '';
+  const isVideo = v.type === 'video';
+  const thumb = isVideo
+    ? `<video src="${v.src}" muted autoplay playsinline preload="auto" loop style="width:100%;height:100%;object-fit:cover;display:block"></video>`
+    : `<img src="${v.src}" style="width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.5s ease">`;
+  return `
+    <div class="vid-card ${size}" id="vcard-${v.id}" data-vid-id="${v.id}" style="animation-delay:${idx*0.05}s">
+      <div class="vid-thumb" data-vid-id="${v.id}">
+        ${thumb}
+        <div class="vid-overlay">
+          <div class="play-circle">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+              <path d="M5 3l11 6-11 6V3z" fill="white"/>
+            </svg>
+          </div>
+        </div>
+        <span class="vid-duration">${isVideo ? '▶' : '📷'}</span>
+      </div>
+      <div class="vid-info">
+        <p class="vid-title">${v.title || 'Tanpa Judul'}</p>
+        ${v.caption ? `<p class="vid-caption">${v.caption}</p>` : ''}
+      </div>
+      <div class="vid-card-footer">
+        <button class="vid-like-btn ${v.liked ? 'liked' : ''}" data-vid-id="${v.id}" onclick="toggleLike(event,'${v.id}')">
+          <span>${v.liked ? '♥' : '♡'}</span> ${v.likes || 0}
+        </button>
+      </div>
+    </div>
+  `;
+}
+
+function attachCardEvents(sec, catId) {
+  sec.querySelectorAll('.vid-thumb[data-vid-id]').forEach(el => {
+    const id = el.getAttribute('data-vid-id');
+    el.addEventListener('click', () => openLb(id));
+    const video = el.querySelector('video');
+    if (video) {
+      // Desktop: hover to play/pause
+      el.addEventListener('mouseenter', () => { video.play(); });
+      el.addEventListener('mouseleave', () => { video.pause(); video.currentTime = 0; });
+      // Mobile: autoplay when card is visible on screen
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            video.play().catch(() => {});
+          } else {
+            video.pause();
+          }
+        });
+      }, { threshold: 0.3 });
+      observer.observe(el);
+    }
+  });
+}
+
+// ─── DRAG SCROLL ──────────────────────────────────────────────────────────────
+function enableDragScroll(el) {
+  if (!el) return;
+  let isDragging = false, startX, scrollLeft;
+  el.addEventListener('mousedown', e => { isDragging = true; startX = e.pageX - el.offsetLeft; scrollLeft = el.scrollLeft; el.classList.add('grabbing'); });
+  el.addEventListener('mouseleave', () => { isDragging = false; el.classList.remove('grabbing'); });
+  el.addEventListener('mouseup', () => { isDragging = false; el.classList.remove('grabbing'); });
+  el.addEventListener('mousemove', e => {
+    if (!isDragging) return;
+    e.preventDefault();
+    el.scrollLeft = scrollLeft - (e.pageX - el.offsetLeft - startX) * 1.4;
+  });
+}
+
+function scrollTrack(id, dir) {
+  const el = document.getElementById(id);
+  if (el) el.scrollBy({ left: dir * 340, behavior: 'smooth' });
+}
+
+// ─── LIGHTBOX ─────────────────────────────────────────────────────────────────
+function openLb(vidId) {
+  const v = videos.find(x => x.id === vidId);
+  if (!v) return;
+  const cat = categories.find(c => c.id === v.catId);
+  lbCurrent = vidId;
+  const lbVid = document.getElementById('lbVid');
+  const lbImg = document.getElementById('lbImg');
+  if (v.type === 'video') {
+    lbVid.src = v.src; lbVid.style.display = 'block'; lbVid.play();
+    lbImg.style.display = 'none'; lbImg.src = '';
+  } else {
+    lbImg.src = v.src; lbImg.style.display = 'block';
+    lbVid.style.display = 'none'; lbVid.src = '';
+  }
+  document.getElementById('lbTitle').textContent = v.title || 'Tanpa Judul';
+  document.getElementById('lbCap').textContent = v.caption || '';
+  document.getElementById('lbDateCat').textContent = cat ? cat.name : '';
+  document.getElementById('lightbox').classList.add('open');
+}
+
+function closeLb() {
+  document.getElementById('lightbox').classList.remove('open');
+  const vid = document.getElementById('lbVid');
+  vid.pause(); vid.src = ''; vid.style.display = 'none';
+  const img = document.getElementById('lbImg');
+  img.src = ''; img.style.display = 'none';
+  lbCurrent = null;
+}
+
+function navLb(dir) {
+  if (!lbCurrent) return;
+  const idx = videos.findIndex(v => v.id === lbCurrent);
+  const next = videos[idx + dir];
+  if (next) openLb(next.id);
+}
+
+function deleteLbVid() {
+  if (!lbCurrent) return;
+  if (!confirm('Yakin mau dihapus?')) return;
+  videos = videos.filter(v => v.id !== lbCurrent);
+  saveVids();
+  closeLb();
+  renderAllSections();
+  renderChips();
+  toast('Momen dihapus');
+}
+
+// ─── LIKE ──────────────────────────────────────────────────────────────────────
+function toggleLike(e, id) {
+  e.stopPropagation();
+  const v = videos.find(x => x.id === id);
+  if (!v) return;
+  v.liked = !v.liked;
+  v.likes = (v.likes || 0) + (v.liked ? 1 : -1);
+  saveVids();
+  const btn = e.currentTarget;
+  btn.classList.toggle('liked', v.liked);
+  btn.innerHTML = `<span>${v.liked ? '♥' : '♡'}</span> ${v.likes}`;
+}
+
+// ─── UPLOAD (LINK-BASED) ───────────────────────────────────────────────────────
+let presetCatId = null;
+
+function openUpload() {
+  presetCatId = null;
+  populateCatSelect();
+  document.getElementById('uploadModal').classList.add('open');
+}
+
+function openUploadFor(catId) {
+  presetCatId = catId;
+  populateCatSelect(catId);
+  document.getElementById('uploadModal').classList.add('open');
+}
+
+function closeUpload() {
+  document.getElementById('uploadModal').classList.remove('open');
+  document.getElementById('fLink').value = '';
+  document.getElementById('fTitle').value = '';
+  document.getElementById('fCaption').value = '';
+  document.getElementById('prevBox').style.display = 'none';
+  document.getElementById('prevVid').src = '';
+  document.getElementById('prevVid').style.display = 'none';
+  document.getElementById('prevImg').src = '';
+  document.getElementById('prevImg').style.display = 'none';
+}
+
+function populateCatSelect(selectId) {
+  const sel = document.getElementById('fCat');
+  sel.innerHTML = categories.map(c =>
+    `<option value="${c.id}" ${c.id === selectId ? 'selected' : ''}>${c.emoji} ${c.name}</option>`
+  ).join('');
+}
+
+function postVideo() {
+  const link = document.getElementById('fLink').value.trim();
+  if (!link) { toast('Paste link Catbox dulu ya 🔗'); return; }
+  const title   = document.getElementById('fTitle').value.trim();
+  const catId   = document.getElementById('fCat').value;
+  const caption = document.getElementById('fCaption').value.trim();
+  const type    = detectType(link);
+  const v = {
+    id: 'v' + Date.now(),
+    catId,
+    title: title || 'Tanpa Judul',
+    caption,
+    type,
+    src: link,
+    likes: 0,
+    liked: false
+  };
+  videos.unshift(v);
+  saveVids();
+  closeUpload();
+  renderAllSections();
+  renderChips();
+  toast('Momen berhasil disimpan ✨');
+  setTimeout(() => {
+    const sec = document.getElementById('sec-' + catId);
+    if (sec) sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, 300);
+}
+
+// ─── CATEGORIES ───────────────────────────────────────────────────────────────
+function openCatModal() {
+  document.getElementById('catNameIn').value = '';
+  document.getElementById('catEmoji').value = '';
+  document.getElementById('catModal').classList.add('open');
+}
+
+function closeCatModal() {
+  document.getElementById('catModal').classList.remove('open');
+}
+
+function addCategory() {
+  const name = document.getElementById('catNameIn').value.trim();
+  if (!name) { toast('Tulis nama upload dulu'); return; }
+  const emoji = document.getElementById('catEmoji').value.trim() || '📁';
+  const id = 'cat_' + Date.now();
+  categories.push({ id, name, emoji });
+  saveCats();
+  closeCatModal();
+  renderChips();
+  renderAllSections();
+  populateCatSelect();
+  toast(`upload "${name}" ditambahkan 🎉`);
+}
+
+// ─── KEYBOARD ─────────────────────────────────────────────────────────────────
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') { closeLb(); closeUpload(); closeCatModal(); }
+  if (e.key === 'ArrowLeft'  && lbCurrent) navLb(-1);
+  if (e.key === 'ArrowRight' && lbCurrent) navLb(1);
+});
+
+// ─── TOAST ────────────────────────────────────────────────────────────────────
+function toast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), 2800);
+}
+
+// ─── BACKSOUND ───────────────────────────────────────────────────────────────
+// Ganti src di bawah dengan link mp3 dari catbox kamu
+const audioEl = document.getElementById('audioEl');
+audioEl.src = 'https://files.catbox.moe/4qluci.mp3'; 
+audioEl.volume = 0.5;
+
+let musicPlaying = false;
+
+function toggleMusic() {
+  if (!audioEl.src || audioEl.src === window.location.href) {
+    toast('Belum ada musik. Edit file dulu ya 🎵');
+    return;
+  }
+  if (musicPlaying) {
+    audioEl.pause();
+    musicPlaying = false;
+    document.getElementById('musicFab').classList.remove('playing');
+    document.getElementById('fabIcon').innerHTML = '<path d="M8 3v10.27A3 3 0 1 1 5.5 11V6.5l9-2.25V12.27A3 3 0 1 1 12.5 10V4.75L8 5.75V3z"/>';
+  } else {
+    audioEl.play().then(() => {
+      musicPlaying = true;
+      document.getElementById('musicFab').classList.add('playing');
+      document.getElementById('fabIcon').innerHTML = '<path d="M5 3h3v14H5zm7 0h3v14h-3z"/>';
+    }).catch(() => toast('Gagal memutar. Cek link mp3-nya ya.'));
+  }
+}
+
+// Auto-play saat user pertama klik halaman
+document.addEventListener('click', () => {
+  if (audioEl.src && audioEl.src !== window.location.href && !musicPlaying) {
+    audioEl.play().then(() => {
+      musicPlaying = true;
+      document.getElementById('musicFab').classList.add('playing');
+      document.getElementById('fabIcon').innerHTML = '<path d="M5 3h3v14H5zm7 0h3v14h-3z"/>';
+    }).catch(() => {});
+  }
+}, { once: true });
+
+boot();
+
+</script>
+</body>
+</html>
